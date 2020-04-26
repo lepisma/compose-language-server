@@ -1,0 +1,23 @@
+{
+  "name": "compose-language-server",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lepisma/compose-language-server.git"
+  },
+  "author": "",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/lepisma/compose-language-server/issues"
+  },
+  "homepage": "https://github.com/lepisma/compose-language-server#readme",
+  "dependencies": {
+    "vscode-languageserver": "^6.1.1",
+    "vscode-languageserver-textdocument": "^1.0.1"
+  }
+}
