@@ -47,6 +47,8 @@
   :major-modes '(org-mode)
   :server-id 'compose-ls))
 
+(add-hook 'org-mode-hook (lambda () (setq-local company-minimum-prefix-length 0)))
+
 (provide 'lsp-compose)
 
 ;;; lsp-compose.el ends here
