@@ -3,16 +3,12 @@
 import {
   createConnection,
   TextDocuments,
-  Diagnostic,
-  DiagnosticSeverity,
   ProposedFeatures,
   InitializeParams,
-  DidChangeConfigurationNotification,
   CompletionItem,
   CompletionItemKind,
   TextDocumentPositionParams,
-  TextDocumentSyncKind,
-  InitializeResult
+  TextDocumentSyncKind
 } from 'vscode-languageserver';
 
 import {
@@ -27,7 +23,7 @@ let connection = createConnection(ProposedFeatures.all);
 // supports full document sync only
 let documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 
-connection.onInitialize((params: InitializeParams) => {
+connection.onInitialize((_params: InitializeParams) => {
   return {
     capabilities: {
       textDocumentSync: TextDocumentSyncKind.Full,
@@ -116,9 +112,9 @@ connection.onCompletion(
           }
         ];
       }
-    } else {
-      return []
     }
+
+    return []
   }
 );
 
