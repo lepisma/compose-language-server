@@ -37,11 +37,61 @@ connection.onInitialize((params: InitializeParams) => {
   };
 });
 
-let getPrefix = (textDocumentPosition: TextDocumentPositionParams) => {
+let getText = (textDocumentPosition: TextDocumentPositionParams) => {
   let doc = documents.get(textDocumentPosition.textDocument.uri);
 
   if (doc)
     return doc.getText();
+}
+
+let parseMetadata = (text: string) => {
+  let lines = text.split('\n').map(l => l.trim());
+
+  let meta: { [field: string]: string } = {};
+
+  lines.forEach(l => {
+    if (l) {
+      let splits = l.split(':');
+      if (splits.length > 1) {
+        meta[splits[0]] = splits.slice(1).join(' ').trim();
+      }
+    }
+  })
+
+  return meta;
+}
+
+let cleanBody = (text: string): string => {
+  let splits = text.split('--');
+  return splits[0].trim();
+}
+
+let parseComposeBuffer = (text: string) => {
+  let splits = text.split('--text follows this line--')
+  if (splits.length === 2) {
+    return {
+      ...parseMetadata(splits[0]),
+      body: cleanBody(splits[1])
+    };
+  } else {
+    return {
+      body: text.trim()
+    };
+  }
+}
+
+let greetingAnticipated = (text: string) => {
+  let re = /^(hi|hello)$/;
+  return text.toLowerCase().match(re);
+}
+
+let addressee = (text: string): string => {
+  let splits = text.split('<');
+  if (splits.length > 1) {
+    return splits[0].split(' ')[0];
+  } else {
+    return text;
+  }
 }
 
 // This handler provides the initial list of the completion items.
@@ -50,15 +100,20 @@ connection.onCompletion(
     // The pass parameter contains the position of the text document in
     // which code complete got requested. For the example we ignore this
     // info and always provide the same completion items.
-    let prefix = getPrefix(textDocumentPosition);
-    if (prefix) {
-      return [
-        {
-          label: prefix.split(' ').slice(0, 5).join(' '),
-          kind: CompletionItemKind.Text,
-          data: null
-        }
-      ];
+    let text = getText(textDocumentPosition);
+
+    if (text) {
+      // NOTE: Very specific completion just to get going as of now
+      let parsed = parseComposeBuffer(text)
+      if (parsed.To && greetingAnticipated(parsed.body)) {
+        return [
+          {
+            label: addressee(parsed.To),
+            kind: CompletionItemKind.Text,
+            data: null
+          }
+        ];
+      }
     } else {
       return []
     }
