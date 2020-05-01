@@ -40,14 +40,16 @@
   (list "node" "./out/server.js" "--stdio"))
 
 (add-to-list 'lsp-language-id-configuration '(org-mode . "compose"))
+(add-to-list 'lsp-language-id-configuration '(mu4e-compose-mode . "compose"))
+
+(add-hook 'org-mode-hook (lambda () (setq-local company-minimum-prefix-length 0)))
+(add-hook 'mu4e-compose-mode-hook (lambda () (setq-local company-minimum-prefix-length 0)))
 
 (lsp-register-client
  (make-lsp-client
   :new-connection (lsp-stdio-connection #'lsp-compose-command)
-  :major-modes '(org-mode)
+  :major-modes '(org-mode mu4e-compose-mode)
   :server-id 'compose-ls))
-
-(add-hook 'org-mode-hook (lambda () (setq-local company-minimum-prefix-length 0)))
 
 (provide 'lsp-compose)
 
