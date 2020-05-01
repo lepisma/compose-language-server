@@ -37,7 +37,7 @@
 
 (defun lsp-compose-command ()
   "Return command to run for the server."
-  (list "node" "./out/server.js" "--stdio"))
+  (list "compose-ls" "--stdio"))
 
 (add-to-list 'lsp-language-id-configuration '(org-mode . "compose"))
 (add-to-list 'lsp-language-id-configuration '(mu4e-compose-mode . "compose"))
