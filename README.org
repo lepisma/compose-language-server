@@ -1,0 +1,4 @@
+#+TITLE: compose-language-server
+
+Language Server for composing plain text. Supposed to bring smart compose like
+feature while working with Emacs.
