@@ -39,8 +39,8 @@
   "Return command to run for the server."
   (list "compose-ls" "--stdio"))
 
-(add-to-list 'lsp-language-id-configuration '(org-mode . "compose"))
-(add-to-list 'lsp-language-id-configuration '(mu4e-compose-mode . "compose"))
+(add-to-list 'lsp-language-id-configuration '(org-mode . "org"))
+(add-to-list 'lsp-language-id-configuration '(mu4e-compose-mode . "mu4e-compose"))
 
 (add-hook 'org-mode-hook (lambda () (setq-local company-minimum-prefix-length 0)))
 (add-hook 'mu4e-compose-mode-hook (lambda () (setq-local company-minimum-prefix-length 0)))
