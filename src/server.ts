@@ -42,62 +42,18 @@ let getText = (textDocumentPosition: TextDocumentPositionParams) => {
     return doc.getText();
 }
 
-let parseMetadata = (text: string) => {
-  let lines = text.split('\n').map(l => l.trim());
-
-  let meta: { [field: string]: string } = {};
-
-  lines.forEach(l => {
-    if (l) {
-      let splits = l.split(':');
-      if (splits.length > 1) {
-        meta[splits[0]] = splits.slice(1).join(' ').trim();
-      }
-    }
-  })
-
-  return meta;
-}
-
-let cleanBody = (text: string): string => {
-  let splits = text.split('--');
-  return splits[0].trim();
-}
-
-let parseComposeBuffer = (text: string) => {
-  let splits = text.split('--text follows this line--')
-  if (splits.length === 2) {
-    return {
-      ...parseMetadata(splits[0]),
-      body: cleanBody(splits[1])
-    };
-  } else {
-    return {
-      body: text.trim()
-    };
-  }
-}
-
-let greetingAnticipated = (text: string) => {
-  let re = /^(hi|hello)$/;
-  return text.toLowerCase().match(re);
-}
-
-let addressee = (text: string): string => {
-  let splits = text.split('<');
-  if (splits.length > 1) {
-    return splits[0].split(' ')[0];
-  } else {
-    return text;
-  }
-}
-
 // This handler provides the initial list of the completion items.
 connection.onCompletion(
   (textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
     // The pass parameter contains the position of the text document in
     // which code complete got requested. For the example we ignore this
     // info and always provide the same completion items.
+
+    // TODO: Steps:
+    //   - parse the document (we will cache pieces from here later)
+    //   - run completion function (this is type dependent and will have a chain of functions)
+    //   - ...
+
     let text = getText(textDocumentPosition);
 
     if (text) {
