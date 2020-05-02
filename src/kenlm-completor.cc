@@ -56,16 +56,16 @@ std::string complete(Model& model, const Vocabulary& vocab, Dictionary& dict, st
   return bestWord;
 }
 
-int main() {
+int main(int argc, char *argv[]) {
   Dictionary dict;
   Config cfg;
   cfg.enumerate_vocab = &dict;
 
-  Model model("file.arpa", cfg);
+  Model model(argv[1], cfg);
   const Vocabulary &vocab = model.GetVocabulary();
 
   std::string prefix;
   while (std::getline(std::cin, prefix)) {
-    std::cout << ">> " << complete(model, vocab, dict, prefix) << std::endl;
+    std::cout << complete(model, vocab, dict, prefix) << std::endl;
   }
 }
