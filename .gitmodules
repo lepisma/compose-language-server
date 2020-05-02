@@ -1,0 +1,4 @@
+[submodule "vendor/kenlm"]
+	path = vendor/kenlm
+	url = git@github.com:kpu/kenlm.git
+	branch = master
