@@ -6,7 +6,6 @@ function addresseeFromEmail(email: Email): string | undefined {
   }
 }
 
-
 function completeGreeting(buffer: Buffer): string | undefined {
   if (buffer.To) {
     let addressee = addresseeFromEmail(buffer.To[0]);
