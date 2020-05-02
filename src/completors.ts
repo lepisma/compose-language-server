@@ -19,12 +19,19 @@ function completeGreeting(buffer: Buffer): string | undefined {
   }
 }
 
+function completeKenLM(buffer: Buffer): string | undefined {
+  let nContext = 5;
+  let prefix = buffer.body.toLowerCase().trim().split(' ').slice(-nContext).join(' ');
+
+  return;
+}
+
 function completorChain(bufferType: BufferType) {
   if (bufferType === BufferType.Mu4e) {
-    return [completeGreeting]
+    return [completeGreeting, completeKenLM];
   }
 
-  return []
+  return [completeKenLM];
 }
 
 export function complete(buffer: Buffer): string | undefined {
