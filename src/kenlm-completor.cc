@@ -13,7 +13,7 @@
 
 using namespace lm::ngram;
 
-State build_prefix_state(ProbingModel& model, const ProbingVocabulary& vocab, std::vector<std::string> words) {
+State build_prefix_state(Model& model, const Vocabulary& vocab, std::vector<std::string> words) {
   State state(model.BeginSentenceState()), out_state;
 
   lm::WordIndex index;
@@ -35,36 +35,37 @@ public:
   };
 };
 
+std::string complete(Model& model, const Vocabulary& vocab, Dictionary& dict, std::string prefix) {
+  double bestScore = -std::numeric_limits<double>::max();
+  std::string bestWord;
+
+  std::vector<std::string> words;
+  boost::split(words, prefix, boost::is_any_of(" "));
+  State prefix_state = build_prefix_state(model, vocab, words);
+  State out_state;
+
+  // 0 is <unk>, 1 is <s>, 2 is </s>
+  double score;
+  for (auto i = 3; i < vocab.Bound(); i++) {
+    score = model.Score(prefix_state, i, out_state);
+    if (score > bestScore) {
+      bestScore = score;
+      bestWord = dict.data[i];
+    }
+  }
+  return bestWord;
+}
+
 int main() {
   Dictionary dict;
   Config cfg;
   cfg.enumerate_vocab = &dict;
 
-  ProbingModel model("file.arpa", cfg);
-  const ProbingVocabulary &vocab = model.GetVocabulary();;
-  State state(model.BeginSentenceState()), out_state;
+  Model model("file.arpa", cfg);
+  const Vocabulary &vocab = model.GetVocabulary();
 
-  std::string sentence;
-  std::vector<std::string> words;
-
-  std::string bestWord;
-  double bestScore;
-  double score;
-
-  State prefix_state;
-  while (std::getline(std::cin, sentence)) {
-    bestScore = -std::numeric_limits<double>::max();
-    boost::split(words, sentence, boost::is_any_of(" "));
-    prefix_state = build_prefix_state(model, vocab, words);
-
-    for (lm::WordIndex i = 3; i < vocab.Bound(); i++) {
-      score = model.Score(prefix_state, i, out_state);
-      if (score > bestScore) {
-        bestScore = score;
-        bestWord = dict.data[i];
-      }
-    }
-
-    std::cout << bestWord << "\n";
+  std::string prefix;
+  while (std::getline(std::cin, prefix)) {
+    std::cout << ">> " << complete(model, vocab, dict, prefix) << std::endl;
   }
 }
