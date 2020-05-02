@@ -15,6 +15,9 @@ import {
   TextDocument
 } from 'vscode-languageserver-textdocument';
 
+import { parse } from './parsers';
+import { complete } from './completors';
+
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 let connection = createConnection(ProposedFeatures.all);
@@ -35,13 +38,6 @@ connection.onInitialize((_params: InitializeParams) => {
   };
 });
 
-let getText = (textDocumentPosition: TextDocumentPositionParams) => {
-  let doc = documents.get(textDocumentPosition.textDocument.uri);
-
-  if (doc)
-    return doc.getText();
-}
-
 // This handler provides the initial list of the completion items.
 connection.onCompletion(
   (textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
@@ -49,28 +45,22 @@ connection.onCompletion(
     // which code complete got requested. For the example we ignore this
     // info and always provide the same completion items.
 
-    // TODO: Steps:
-    //   - parse the document (we will cache pieces from here later)
-    //   - run completion function (this is type dependent and will have a chain of functions)
-    //   - ...
-
-    let text = getText(textDocumentPosition);
-
-    if (text) {
-      // NOTE: Very specific completion just to get going as of now
-      let parsed = parseComposeBuffer(text)
-      if (parsed.To && greetingAnticipated(parsed.body)) {
+    let doc = documents.get(textDocumentPosition.textDocument.uri);
+    if (doc) {
+      let buffer = parse(doc, textDocumentPosition.position);
+      let completion = complete(buffer);
+      if (completion) {
         return [
           {
-            label: addressee(parsed.To),
+            label: completion,
             kind: CompletionItemKind.Text,
             data: null
           }
         ];
-      }
-    }
+      };
+    };
 
-    return []
+    return [];
   }
 );
 
