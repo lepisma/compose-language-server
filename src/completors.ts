@@ -20,6 +20,10 @@ function completeGreeting(buffer: Buffer): string | undefined {
 }
 
 async function completeKenLM(buffer: Buffer): Promise<string | undefined> {
+  if (buffer.body.slice(-1) !== ' ') {
+    return
+  }
+
   let nContext = 5;
   let prefix = buffer.body.toLowerCase().trim().split(' ').slice(-nContext).join(' ');
 
