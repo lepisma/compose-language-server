@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/lepisma/compose-language-server#readme",
   "dependencies": {
+    "@types/node": "^13.13.4",
     "vscode-languageserver": "^6.1.1",
     "vscode-languageserver-textdocument": "^1.0.1"
   }
