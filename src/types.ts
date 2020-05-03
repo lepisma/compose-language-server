@@ -15,3 +15,6 @@ export interface Email {
   emailId: string,
   name?: Name
 }
+
+export type Completion = string | undefined;
+export type CompletorReturn = Completion | symbol;

@@ -1,12 +1,15 @@
-import { Buffer, BufferType, Email } from './types';
+import { Buffer, BufferType, Email, Completion, CompletorReturn } from './types';
 
-function addresseeFromEmail(email: Email): string | undefined {
+// Symbol for stopping chain of completors
+const STOP = Symbol('STOP');
+
+function addresseeFromEmail(email: Email): Completion {
   if (email.name && email.name.firstName) {
     return email.name.firstName;
   }
 }
 
-function completeGreeting(buffer: Buffer): string | undefined {
+function completeGreeting(buffer: Buffer): CompletorReturn {
   if (buffer.To) {
     let addressee = addresseeFromEmail(buffer.To[0]);
 
@@ -19,7 +22,7 @@ function completeGreeting(buffer: Buffer): string | undefined {
   }
 }
 
-async function completeKenLM(buffer: Buffer): Promise<string | undefined> {
+async function completeKenLM(buffer: Buffer): Promise<CompletorReturn> {
   if (buffer.body.slice(-1) !== ' ') {
     return
   }
@@ -38,12 +41,17 @@ function completorChain(bufferType: BufferType) {
   return [completeKenLM];
 }
 
-export async function complete(buffer: Buffer): Promise<string | undefined> {
+export async function complete(buffer: Buffer): Promise<Completion> {
   let completors = completorChain(buffer.type);
 
   for (let comp of completors) {
     let completion = await comp(buffer);
-    if (completion) {
+    if (completion === STOP) {
+      // Completor can have a say by force stopping rest of the completors if it
+      // returns STOP symbol.
+      return;
+    } else if (completion)  {
+      // @ts-ignore
       return completion;
     };
   }
