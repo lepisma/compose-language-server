@@ -19,11 +19,11 @@ function completeGreeting(buffer: Buffer): string | undefined {
   }
 }
 
-function completeKenLM(buffer: Buffer): string | undefined {
+async function completeKenLM(buffer: Buffer): Promise<string | undefined> {
   let nContext = 5;
   let prefix = buffer.body.toLowerCase().trim().split(' ').slice(-nContext).join(' ');
 
-  return;
+  return 'not implemented';
 }
 
 function completorChain(bufferType: BufferType) {
@@ -34,11 +34,11 @@ function completorChain(bufferType: BufferType) {
   return [completeKenLM];
 }
 
-export function complete(buffer: Buffer): string | undefined {
+export async function complete(buffer: Buffer): Promise<string | undefined> {
   let completors = completorChain(buffer.type);
 
   for (let comp of completors) {
-    let completion = comp(buffer);
+    let completion = await comp(buffer);
     if (completion) {
       return completion;
     };

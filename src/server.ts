@@ -33,11 +33,13 @@ connection.onInitialize((_params: InitializeParams) => {
 });
 
 connection.onCompletion(
-  (textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
+  async (textDocumentPosition: TextDocumentPositionParams) => {
     let doc = documents.get(textDocumentPosition.textDocument.uri);
+
     if (doc) {
       let buffer = parse(doc, textDocumentPosition.position);
-      let completion = complete(buffer);
+      let completion = await complete(buffer);
+
       if (completion) {
         return [
           {
