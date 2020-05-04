@@ -16,10 +16,12 @@ import {
 } from 'vscode-languageserver-textdocument';
 
 import { parse } from './parsers';
-import { complete } from './completors';
+import * as completors from './completors';
 
 let connection = createConnection(ProposedFeatures.all);
 let documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
+
+completors.initialize(process.argv);
 
 connection.onInitialize((_params: InitializeParams) => {
   return {
@@ -38,7 +40,7 @@ connection.onCompletion(
 
     if (doc) {
       let buffer = parse(doc, textDocumentPosition.position);
-      let completion = await complete(buffer);
+      let completion = await completors.complete(buffer);
 
       if (completion) {
         return [

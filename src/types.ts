@@ -18,3 +18,7 @@ export interface Email {
 
 export type Completion = string | undefined;
 export type CompletorReturn = Completion | symbol;
+
+export interface Completor {
+  complete(buffer: Buffer): Promise<CompletorReturn> | CompletorReturn;
+}

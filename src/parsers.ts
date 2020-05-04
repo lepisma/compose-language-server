@@ -72,12 +72,12 @@ function parseMu4e(text: string): Buffer {
     return {
       type: BufferType.Mu4e,
       ...parseMu4eHeaders(splits[0]),
-      body: splits[1].trim()
+      body: splits[1]
     };
   } else {
     return {
       type: BufferType.Plain,
-      body: text.trim()
+      body: text
     };
   }
 }
