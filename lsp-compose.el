@@ -35,20 +35,27 @@
   "Language Server Protocol client for compose server."
   :group 'lsp-mode)
 
+(defcustom lsp-compose-kenlm-model-path nil
+  "Model file to be used by kenlm completor."
+  :group 'lsp-compose)
+
+(defcustom lsp-compose-kenlm-prefix-size 7
+  "Number of tokens to use for prefix."
+  :group 'lsp-compose)
+
 (defun lsp-compose-command ()
   "Return command to run for the server."
-  (list "compose-ls" "--stdio"))
+  (list "compose-ls" "--stdio"
+        "--kenlm-model-path" lsp-compose-kenlm-model-path
+        "--kenlm-prefix-size" (number-to-string lsp-compose-kenlm-prefix-size)))
 
-(add-to-list 'lsp-language-id-configuration '(org-mode . "org"))
 (add-to-list 'lsp-language-id-configuration '(mu4e-compose-mode . "mu4e-compose"))
-
-(add-hook 'org-mode-hook (lambda () (setq-local company-minimum-prefix-length 0)))
 (add-hook 'mu4e-compose-mode-hook (lambda () (setq-local company-minimum-prefix-length 0)))
 
 (lsp-register-client
  (make-lsp-client
   :new-connection (lsp-stdio-connection #'lsp-compose-command)
-  :major-modes '(org-mode mu4e-compose-mode)
+  :major-modes '(mu4e-compose-mode)
   :server-id 'compose-ls))
 
 (provide 'lsp-compose)
