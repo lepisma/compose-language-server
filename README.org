@@ -2,3 +2,8 @@
 
 Language Server for composing plain text. Supposed to bring smart compose like
 feature while working with Emacs.
+
+[[file:./screen.gif]]
+
+Currently supports basic one word ahead completion based on statistical language
+models.
