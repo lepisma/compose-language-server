@@ -14,6 +14,7 @@
 using namespace lm::ngram;
 
 State build_prefix_state(Model& model, const Vocabulary& vocab, std::vector<std::string> words) {
+  // TODO: reconsider the begin sentence state
   State state(model.BeginSentenceState()), out_state;
 
   lm::WordIndex index;
