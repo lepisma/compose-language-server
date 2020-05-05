@@ -36,25 +36,52 @@ public:
   };
 };
 
+// Provide one word ahead completion for provided prefix. If prefix ends with a
+// partial word, only return possible words.
 std::string complete(Model& model, const Vocabulary& vocab, Dictionary& dict, std::string prefix) {
-  double bestScore = -std::numeric_limits<double>::max();
-  std::string bestWord;
+  // Tell if the pointer is after a whitespace
+  bool in_word = prefix.back() != ' ';
+
+  boost::trim(prefix);
 
   std::vector<std::string> words;
   boost::split(words, prefix, boost::is_any_of(" "));
-  State prefix_state = build_prefix_state(model, vocab, words);
-  State out_state;
+
+  // Whether to do partial word completion.
+  bool partial_completion = (words.size() > 0) && in_word;
+
+  State prefix_state, out_state;
+  if (partial_completion) {
+    prefix_state =
+      build_prefix_state(model, vocab, std::vector<std::string>(words.begin(), words.end() - 1));
+  } else {
+    prefix_state = build_prefix_state(model, vocab, words);
+  }
+
+  std::string last_word = words.size() > 0 ? words.back() : " ";
 
   // 0 is <unk>, 1 is <s>, 2 is </s>
   double score;
+  std::string word;
+  double best_score = -std::numeric_limits<double>::max();
+  std::string best_word;
+
   for (auto i = 3; i < vocab.Bound(); i++) {
+    word = dict.data[i];
+
+    if (partial_completion) {
+      if (word.rfind(last_word, 0) != 0) {
+        continue;
+      }
+    }
+
     score = model.Score(prefix_state, i, out_state);
-    if (score > bestScore) {
-      bestScore = score;
-      bestWord = dict.data[i];
+    if (score > best_score) {
+      best_score = score;
+      best_word = word;
     }
   }
-  return bestWord;
+  return best_word;
 }
 
 int main(int argc, char *argv[]) {

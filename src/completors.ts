@@ -46,13 +46,18 @@ class KenLMCompletor implements Completor {
   }
 
   async complete(buffer: Buffer): Promise<CompletorReturn> {
-    if (buffer.body.slice(-1) !== ' ') {
-      return;
+    // We want to preserve the right trailing space since that defines whether
+    // we are doing partial word completion or full new one.
+    let tokens = buffer.body.trimLeft().toLowerCase().replace('\n', ' ').replace(/\s+/g, ' ').split(' ');
+
+    let sliceSize: number;
+    if (tokens[tokens.length - 1] === '') {
+      sliceSize = this.prefixSize + 1;
+    } else {
+      sliceSize = this.prefixSize;
     }
 
-    let prefix = buffer.body
-      .toLowerCase().trim().replace('\n', ' ').replace(/\s+/g, ' ').split(' ')
-      .slice(-this.prefixSize).join(' ');
+    let prefix = tokens.slice(-sliceSize).join(' ');
 
     this.proc.stdin.write(prefix + '\n');
     return (await this.readLine()).trim();
