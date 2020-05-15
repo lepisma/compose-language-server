@@ -4,7 +4,7 @@ Language Server for composing plain text. Supposed to bring smart compose like
 feature while working with Emacs. Currently supports basic one word ahead
 completion based on statistical language models.
 
-#+HTML: <img src="./screen.gif" width="500" />
+#+HTML: <img src="./screen.gif" width="400" align="right"/>
 
 The language server as of now consists of a KenLM binary =kenlm-completor= and a
 node script =compose-ls=. Both of these can be built by running =make= (note that
