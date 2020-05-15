@@ -1,5 +1,7 @@
 #+TITLE: compose-language-server
 
+[[tag][file:https://img.shields.io/github/v/tag/lepisma/compose-language-server.svg]]
+
 Language Server for composing plain text. Supposed to bring smart compose like
 feature while working with Emacs. Currently supports basic one word ahead
 completion based on statistical language models.
