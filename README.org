@@ -1,9 +1,29 @@
 #+TITLE: compose-language-server
 
 Language Server for composing plain text. Supposed to bring smart compose like
-feature while working with Emacs.
+feature while working with Emacs. Currently supports basic one word ahead
+completion based on statistical language models.
 
 #+HTML: <img src="./screen.gif" width="500" />
 
-Currently supports basic one word ahead completion based on statistical language
-models.
+The language server as of now consists of a KenLM binary =kenlm-completor= and a
+node script =compose-ls=. Both of these can be built by running =make= (note that
+you also need to build kenlm which is present in a git submodule). Run =make
+install= to install =compose-ls=. You will also need to put =kenlm-completor= binary
+in your =$PATH=.
+
+#+begin_quote
+kenlm-completor cli is going to be integrated as c++ node module in future
+version.
+#+end_quote
+
+Once setup, the server can be started using something like the following:
+
+#+begin_src shell
+  # See kenlm's doc for building language models. Prefix size is the number of
+  # tokens to be passed as context.
+  compose-ls --stdio --kenlm-model-path /path/to/kenlm/language/model.arpa --kenlm-prefix-size 7
+#+end_src
+
+If you are using Emacs, there is a client connection setup for =mu4e-compose-mode=
+(the place where I wanted to have completion) in =lsp-compose.el=.
