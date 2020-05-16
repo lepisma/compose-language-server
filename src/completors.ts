@@ -48,7 +48,7 @@ class KenLMCompletor implements Completor {
   async complete(buffer: Buffer): Promise<CompletorReturn> {
     // We want to preserve the right trailing space since that defines whether
     // we are doing partial word completion or full new one.
-    let tokens = buffer.body.trimLeft().toLowerCase().replace('\n', ' ').replace(/\s+/g, ' ').split(' ');
+    let tokens = buffer.body.trimLeft().replace('\n', ' ').replace(/\s+/g, ' ').split(' ');
 
     let sliceSize: number;
     if (tokens[tokens.length - 1] === '') {
