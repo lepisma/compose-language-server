@@ -35,6 +35,11 @@
   "Language Server Protocol client for compose server."
   :group 'lsp-mode)
 
+(defcustom lsp-compose-active-modes '(message-mode mu4e-compose-mode)
+  "Model file to be used by kenlm completor."
+  :type 'list
+  :group 'lsp-compose)
+
 (defcustom lsp-compose-kenlm-model-path nil
   "Model file to be used by kenlm completor."
   :group 'lsp-compose)
@@ -55,7 +60,7 @@
 (lsp-register-client
  (make-lsp-client
   :new-connection (lsp-stdio-connection #'lsp-compose-command)
-  :major-modes '(mu4e-compose-mode)
+  :major-modes lsp-compose-active-modes
   :server-id 'compose-ls))
 
 (provide 'lsp-compose)
